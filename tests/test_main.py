@@ -1,5 +1,5 @@
 import pytest
-from apfs-scan import CustomHttpAdapter, get_legacy_session, get_apfs_data, apfs_data
+from apfs_scan import CustomHttpAdapter, get_legacy_session, get_apfs_data, apfs_data
 
 def test_CustomHttpAdapter():
   assert CustomHttpAdapter()
