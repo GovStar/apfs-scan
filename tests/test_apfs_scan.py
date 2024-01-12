@@ -1,6 +1,6 @@
 import pytest
 from apfs_scan import CustomHttpAdapter
-# , get_legacy_session, get_apfs_data, apfs_data
+# get_apfs_data, apfs_data
 
 def test_custom_http_adapter_ssl_context(): 
   adapter = CustomHttpAdapter()
@@ -19,19 +19,16 @@ def test_custom_http_adapter_pool_manager():
   assert pool_manager.ssl_context == ssl_context
 
 
-@pytest.mark.parametrize('connections.maxsize', [
-  (5, 20),
-  (10, 100),
-  (1, 10)
-])
+# @pytest.mark.parametrize('connections.maxsize', [
+#   (5, 20),
+#   (10, 100),
+#   (1, 10)
+# ])
 
 def test_custom_http_adapter_pool_manager_params():
   adapter = CustomHttpAdapter()
   assert adapter.poolmanager
 
-# def test_get_legacy_session():
-#   session = get_legacy_session()
-#   assert session.adapters['https://'].__class__.__name__ == 'CustomHttpAdapter'
 
 # def test_get_apfs_data():
 #   data = get_apfs_data()
