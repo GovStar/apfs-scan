@@ -1,4 +1,5 @@
-requests
-toml
-datetime
+requests~=2.31.0
+toml~=0.10.2
+datetime~=5.4
 boto3
+pandas~=2.2.1

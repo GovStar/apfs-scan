@@ -1,4 +1,5 @@
-import requests, toml, boto3, ssl, urllib3, json, pprint
+import requests, ssl
+import json, pprint, toml
 from datetime import datetime
 
 ##Global Variables
