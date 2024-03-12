@@ -33,7 +33,7 @@ def get_legacy_session():
 def get_apfs_data():
     apfs = get_legacy_session().get(APFS_URL)
     apfs.data = json.loads(apfs.text)
-    print("Queriried the data from the APFS API")
+    print("Queried the data from the APFS API")
     return apfs.data[0]
 
 def apfs_data(force_refresh=False):
