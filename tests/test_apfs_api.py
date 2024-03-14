@@ -1,7 +1,7 @@
 import unittest
 import requests
 
-from apfs_api.apfs_cloud_api_hooks import ApfsSession
+from apfs_scan.apfs_api.apfs_cloud_api_hooks import ApfsSession
 
 
 class ApfsHookTesting(unittest.TestCase):

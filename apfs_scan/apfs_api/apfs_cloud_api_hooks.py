@@ -1,12 +1,14 @@
 import json
 import logging
 from typing import List, Any
-
+from time import gmtime, struct_time
+from datetime import date
 import requests
-from dataclasses import dataclass,field
+from dataclasses import dataclass, field
+from pandas import DataFrame
 from collections import defaultdict
 from requests import request, Session, cookies
-from apfs_api.utils import exception_log_and_exit,DATA_DICT_COLUMNS
+from apfs_scan.apfs_api.utils import exception_log_and_exit, DATA_DICT_COLUMNS
 
 
 @dataclass(init=True, repr=True, eq=True)
@@ -15,12 +17,22 @@ class ApfsSession:
     home_page: requests.Response = session.get(url='https://apfs-cloud.dhs.gov')
     forcast_records_json = session.get(url='https://apfs-cloud.dhs.gov/api/forecast/').json()
     apfs_cookie: str = home_page.cookies.items()[0][1]
+    forcast_records_df: DataFrame = DataFrame(forcast_records_json)
     DATA_DICT_COLUMNS: List[str] = field(default_factory=list)
+    data_time_stamp: struct_time = 0
 
     def __post_init__(self):
+        self.check_data_refresh()
         self.test_apfs_connection()
         self.validate_apfs_data()
         self.update_DATA_DICT_COLUMNS()
+
+    # Check if
+    def check_data_refresh(self):
+        # time uses ms since epoc and are in UTC time
+        if (gmtime() - self.data_time_stamp) > 7200:
+            1
+        return True
 
     def test_apfs_connection(self) -> bool:
         if self.home_page.status_code != 200:
@@ -34,7 +46,7 @@ class ApfsSession:
     def validate_apfs_data(self) -> bool:
         try:
             # Will throw an error if not a valid type this works as type validating
-            json.load(self.forcast_records_json)
+            json.loads(json.dumps(self.forcast_records_json))
             if len(self.forcast_records_json) < 1:
                 logging.error("APFS returned no data")
                 return False
