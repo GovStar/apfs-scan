@@ -27,7 +27,6 @@ class ApfsSession:
         self.validate_apfs_data()
         self.update_DATA_DICT_COLUMNS()
 
-    # Check if
     def check_data_refresh(self):
         # time uses ms since epoc and are in UTC time
         if (gmtime() - self.data_time_stamp) > 7200:

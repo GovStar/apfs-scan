@@ -75,7 +75,7 @@ def validate_output_file(file_path):
             logging.error("File path does not exist")
             raise FileNotFoundError
     except FileNotFoundError as e:
-        exception_log_and_exit(e)
+        create_outfile(file_path)
     except Exception as e:
         exception_log_and_exit(e)
 
