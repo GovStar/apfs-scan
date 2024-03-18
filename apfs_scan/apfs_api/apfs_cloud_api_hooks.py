@@ -77,41 +77,33 @@ class ApfsSession:
         else:
             self.logger.debug("APFS local new enough not pulling more data: " + str(time_diff))
 
-    def update_data_dict_columns(self) -> bool:
+    def update_data_dict_columns(self) -> None:
         try:
             self.DATA_DICT_COLUMNS = self.forcast_records_df.columns.to_list()
         except ValueError as e:
             self.logger.error("APFS json data is bad")
             exception_log_and_exit(e)
-            return False
         except TypeError as e:
             self.logger.error("APFS json return type is unexpected")
             exception_log_and_exit(e)
-            return False
         except Exception as e:
             self.logger.error("APFS update_data_dict_columns unhandled error: "+str(e))
             exception_log_and_exit(e)
-            return False
-        return True
 
-    def validate_apfs_data(self) -> bool:
+    def validate_apfs_data(self) -> None:
         try:
             # Will throw an error if not a valid type this works as type validating
             json.loads(json.dumps(self.forcast_records_json))
             if len(self.forcast_records_json) < 1:
                 self.logger.error("APFS returned no data")
-                return False
             else:
                 self.logger.debug("APFS returned data")
         except ValueError as e:
             self.logger.error("APFS returned a bad or no JSON data")
             exception_log_and_exit(e)
-            return False
         except Exception as e:
             self.logger.error("APFS validate_apfs_data unhandled error: "+str(e))
             exception_log_and_exit(e)
-            return False
-        return True
 
     def update_ofd_data(self) -> None:
         if self.data_ofd:
