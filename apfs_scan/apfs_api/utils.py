@@ -18,6 +18,7 @@ DATA_DICT_COLUMNS: list = ['id', 'mission', 'organization', 'small_business_prog
 
 def exception_log_and_exit(exception: Exception):
     import logging
-    logging.exception("unrecoverable exception: ", exception)
-    logging.error("Exiting with code 1 after unrecoverable exception")
+    logger = logging.getLogger(__name__)
+    logger.exception("unrecoverable exception: ", exception)
+    logger.error("Exiting with code 1 after unrecoverable exception")
     exit(1)

@@ -15,5 +15,9 @@ from apfs_scan.apfs_api.utils import (
 
 def init_apfs_api_logger():
     import logging
-    logging.basicConfig(filename='apfs_api.log', level=logging.INFO)
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(filename='apfs_api.log', level=logging.DEBUG)
     logging.debug('Started apfs_api')
+
+
+init_apfs_api_logger()

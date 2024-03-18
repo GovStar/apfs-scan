@@ -165,3 +165,9 @@ local.properties
 *.iml
 out
 gen
+
+# log files
+*.log
+
+# Test files
+test/*.json
