@@ -2,10 +2,9 @@ import argparse
 import json
 from apfs_scan.apfs_api.utils import DATA_DICT_COLUMNS, exception_log_and_exit
 from apfs_scan.apfs_api.apfs_cloud_api_hooks import ApfsSession
-from apfs_scan.apfs_api.forecast_parser import filter_on_field, load_apfs_data
-from pandas import DataFrame
+from apfs_scan.apfs_api.forecast_parser import filter_on_field, ApfsForecastParser
 from os import getcwd
-from os.path import abspath, exists, join, basename, dirname
+from os.path import abspath, exists, dirname
 import logging
 
 
@@ -110,7 +109,9 @@ def apfs_cli_wrapper():
     args = vars(apfs_cli.parser.parse_args())
     logger.debug('apfs_cli args: ' + str(args))
 
-    apfs_api = ApfsSession(args['forcast_records'][0])
+    apfs_handler = ApfsForecastParser(apfs_file_path=args['forcast-records'])
+
+    apfs_api = ApfsSession(apfs_handler.data_ofd)
 
     logger.debug('Created cli parser')
 

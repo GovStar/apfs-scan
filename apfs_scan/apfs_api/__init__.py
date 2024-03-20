@@ -2,6 +2,10 @@ from apfs_scan.apfs_api.apfs_cloud_api_hooks import (
     ApfsSession,
 )
 
+from apfs_scan.apfs_api.apfs_wayback_api_hooks import (
+    WayBackApfsSession,
+)
+
 from apfs_scan.apfs_api.forecast_parser import (
     load_apfs_data,
     filter_on_field,
