@@ -171,3 +171,4 @@ gen
 
 # Test files
 tests/*.json
+tests/testfiles/*

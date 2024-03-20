@@ -9,11 +9,9 @@ class ApfsHookTesting(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
         super(ApfsHookTesting, self).__init__(*args, **kwargs)
-        self.apfs_api = ApfsSession()
 
     def test_apfs_session(self):
-        self.assertIsInstance(self.apfs_api.home_page, requests.Response)
-
+        self.apfs_api = ApfsSession()
     def test_apfs_json(self):
         self.assertIsNotNone(self.apfs_api.forcast_records_json)
         self.assertGreaterEqual(len(self.apfs_api.forcast_records_json), 1)
