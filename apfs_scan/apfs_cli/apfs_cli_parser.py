@@ -4,7 +4,7 @@ from typing import Any
 
 from apfs_scan.apfs_api.utils import DATA_DICT_COLUMNS, exception_log_and_exit
 from apfs_scan.apfs_api.apfs_cloud_api_hooks import ApfsSession
-from apfs_scan.apfs_api.forecast_parser import filter_on_field, ApfsForecastParser
+from apfs_scan.apfs_api.forecast_parser import ApfsForecastParser
 from apfs_scan.apfs_cli.prettyprintformate import pretty_print_forecast_data
 from os import getcwd
 from os.path import abspath, exists, dirname
@@ -49,11 +49,8 @@ class TestingFileAction(argparse.Action):
 class ApfsArgParser:
     parser: argparse.ArgumentParser
 
-    # apfs_api: ApfsSession
-
     def __init__(self):
         self.init_logging()
-        # self.apfs_api = apfs_api
         self.init_parser()
         self.add_filter_args()
 
@@ -92,13 +89,7 @@ class ApfsArgParser:
                     nargs='?',
                 )
         except NameError as e:
-            for flag in DATA_DICT_COLUMNS:
-                self.parser.add_argument(
-                    f"--{flag}",
-                    action="store",
-                    help=f"Filter the results by {flag} specified",
-                    nargs='?',
-                )
+            pass
         except Exception as e:
             exception_log_and_exit(e)
 
@@ -119,13 +110,17 @@ def apfs_cli_wrapper():
         logger.debug('Pulling new data from API')
         apfs_api = ApfsSession()
         apfs_handler.apfs_data = apfs_api.forcast_records_df.copy()
+        apfs_handler.write_apfs_data()
 
-    # Needs to be changed to an accumulator that then does the filtering all at once.
-    for flag in apfs_api.DATA_DICT_COLUMNS:
-        if args[flag] is not None:
-            apfs_api.forcast_records_df = filter_on_field(apfs_api.forcast_records_df, field=flag, value=args[flag])
+    filter_fields: dict = {k: v for k, v in args.items() if v is not None and k in apfs_handler.apfs_data.columns.values}
+    display_fields: list = list(set(DATA_DICT_COLUMNS) & set(args.keys()))
 
-    pretty_print_forecast_data(data=apfs_api.forcast_records_df.copy())
+    logger.debug('filter_fields: ' + str(filter_fields))
+    logger.debug('display_fields: ' + str(display_fields[0:10]))
+
+    apfs_handler.filter_view_on_field(field=display_fields, select_values=filter_fields)
+    #print(pretty_print_forecast_data(apfs_handler.apfs_data_view, display_fields=display_fields))
+    print(str(apfs_handler.apfs_data_view))
 
 
 if __name__ == '__main__':

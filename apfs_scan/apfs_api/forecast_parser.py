@@ -1,9 +1,10 @@
 import logging
 from os import access, W_OK
 from time import time
+from typing import List, Any
 
 import pandas as pd
-from pandas import DataFrame, read_json
+from pandas import DataFrame, read_json, Series
 
 from apfs_scan.apfs_api.utils import DATA_DICT_COLUMNS, exception_log_and_exit
 from os.path import getmtime, exists
@@ -23,7 +24,7 @@ def filter_on_field(data: pd.DataFrame, field: DATA_DICT_COLUMNS, value: str) ->
 
 class ApfsForecastParser:
     apfs_data: pd.DataFrame
-    apfs_data_view: pd.Index
+    apfs_data_view: Any
     logger: logging.Logger
     data_ofd: bool = False
     data_time_stamp: float
@@ -41,16 +42,23 @@ class ApfsForecastParser:
         else:
             self.data_ofd = True
 
-    def filter_view_on_field(self, field: DATA_DICT_COLUMNS, value: str) -> None:
-        self.apfs_data_view = self.apfs_data[self.apfs_data[field] == value]
+    def filter_view_on_field(self, field: List[str], select_values: dict[str, Any]) -> None:
+        #self.apfs_data_view = self.apfs_data.loc[(self.apfs_data[list(select_values)] == Series(select_values)).all(axis=1)]
+        mask = pd.Series([True] * len(self.apfs_data))
+        for column, value in select_values.items():
+            if column in self.apfs_data.columns:
+                mask &= (self.apfs_data[column] == value)
+
+        self.apfs_data_view = self.apfs_data[mask]
+        self.logger.debug("apfs_data_view updated: "+str(self.apfs_data_view.head()))
 
     def validate_output_file(self) -> None:
-        self.logger.debug("validate_output_file passed path: "+str(self.apfs_file_path))
+        self.logger.debug("validate_output_file passed path: " + str(self.apfs_file_path))
         try:
             # Checks if file exists and is writeable
             access(self.apfs_file_path, W_OK)
             does_exist: bool = exists(self.apfs_file_path)
-            logging.debug("File exist status: "+str(does_exist))
+            logging.debug("File exist status: " + str(does_exist))
             self.apfs_file_exist = exists(self.apfs_file_path)
         except FileNotFoundError as e:
             self.logger.error("APFS file path is not writeable")
@@ -74,10 +82,13 @@ class ApfsForecastParser:
         time_diff: float = time() - self.data_time_stamp
         self.logger.debug("APFS local vs remote data time difference: " + str(time_diff))
 
-        if time_diff > 7200:
+        # Checks if older than one week in seconds
+        if time_diff > 100: #604800:
             self.data_ofd = True
+            self.logger.debug(
+                "APFS local not new enough, setting data_ofd to true and pulling more data: " + str(time_diff))
         else:
-            self.logger.debug("APFS local new enough not pulling more data: " + str(time_diff))
+            self.logger.debug("APFS local new enough setting data_ofd to false " + str(time_diff))
 
     def write_apfs_data(self) -> None:
         try:
@@ -99,6 +110,7 @@ class ApfsForecastParser:
             with open(self.apfs_file_path, 'r', encoding='utf-8') as outfile:
                 self.logger.debug("Reading apfs forcast from file: " + self.apfs_file_path)
                 self.apfs_data = read_json(outfile)
+            self.logger.debug("apfs_data read: " + str(self.apfs_data.head()))
         except ValueError as e:
             self.logger.error("APFS returned a bad type when writing to file")
             exception_log_and_exit(e)
