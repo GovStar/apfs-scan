@@ -1,8 +1,12 @@
-from tabulate import tabulate
 from pandas import DataFrame as df
 
 
-def pretty_print_forecast_data(data: df):
-    print_columns = ["apfs_number", "mission", "requirements_title", "contract_status"]
+def pretty_print_forecast_data(data: df, display_fields: list) -> str:
+    import logging
+    from tabulate import tabulate
 
-    return tabulate(tabular_data=data, headers=print_columns, tablefmt="double_grid")
+    logger = logging.getLogger(__name__)
+    output: str = tabulate(tabular_data=data, headers=display_fields, tablefmt="outline")
+    logger.debug("pretty_print_forecast_data: "+output[:1000])
+
+    return output

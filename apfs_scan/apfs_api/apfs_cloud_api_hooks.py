@@ -1,7 +1,7 @@
 import json
 import logging
 from os import access, W_OK
-from typing import List
+from typing import List, Dict, Any, Optional
 from time import time
 import requests
 from pandas import DataFrame, read_json
@@ -12,7 +12,7 @@ from apfs_scan.apfs_api.utils import exception_log_and_exit
 class ApfsSession:
     session: requests.Session
     home_page: requests.Response
-    forcast_records_json: dict
+    forcast_records_json: Optional[Dict[str, Any]]
     forcast_records_df: DataFrame
     DATA_DICT_COLUMNS: List[str]
     data_time_stamp: float
@@ -30,8 +30,8 @@ class ApfsSession:
             self.session.headers.update({'User-Agent': user_agent})
             self.home_page = self.session.get(url='https://apfs-cloud.dhs.gov')
             self.forcast_records_json = self.session.get(url='https://apfs-cloud.dhs.gov/api/forecast/').json()
-            self.logger.debug('forcast_records_json: '+str(self.forcast_records_json))
-            self.logger.debug('forcast_records_json: '+str(DataFrame.from_dict(self.forcast_records_json).head()))
+            self.logger.debug('forcast_records_json: '+str(self.forcast_records_json[1:10]))
+            self.logger.debug('forcast_records_df: '+str(DataFrame.from_dict(self.forcast_records_json).head()))
             self.forcast_records_df = DataFrame.from_dict(self.forcast_records_json)
             if self.home_page.status_code != 200:
                 self.logger.error("APFS connection returned a bad status code")
