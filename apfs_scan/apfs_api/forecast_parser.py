@@ -5,9 +5,7 @@ from time import time
 import pandas as pd
 from pandas import DataFrame, read_json
 
-from apfs_scan.apfs_api.apfs_cloud_api_hooks import ApfsSession
 from apfs_scan.apfs_api.utils import DATA_DICT_COLUMNS, exception_log_and_exit
-import json
 from os.path import getmtime, exists
 import logging
 
@@ -33,17 +31,26 @@ class ApfsForecastParser:
     apfs_file_path: str
 
     def __init__(self, apfs_file_path: str):
+        self.logger = logging.getLogger(__name__)
+        self.apfs_file_exist = False
         self.apfs_file_path = apfs_file_path
-        self.check_data_refresh()
+        self.validate_output_file()
+        if self.apfs_file_exist:
+            self.read_apfs_data()
+            self.check_data_refresh()
+        else:
+            self.data_ofd = True
 
     def filter_view_on_field(self, field: DATA_DICT_COLUMNS, value: str) -> None:
         self.apfs_data_view = self.apfs_data[self.apfs_data[field] == value]
 
     def validate_output_file(self) -> None:
-        self.logger.debug(self.apfs_file_path)
+        self.logger.debug("validate_output_file passed path: "+str(self.apfs_file_path))
         try:
             # Checks if file exists and is writeable
             access(self.apfs_file_path, W_OK)
+            does_exist: bool = exists(self.apfs_file_path)
+            logging.debug("File exist status: "+str(does_exist))
             self.apfs_file_exist = exists(self.apfs_file_path)
         except FileNotFoundError as e:
             self.logger.error("APFS file path is not writeable")
