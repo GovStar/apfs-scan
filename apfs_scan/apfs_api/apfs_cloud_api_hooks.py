@@ -31,7 +31,6 @@ class ApfsSession:
             self.home_page = self.session.get(url='https://apfs-cloud.dhs.gov')
             self.forcast_records_json = self.session.get(url='https://apfs-cloud.dhs.gov/api/forecast/').json()
             self.logger.debug('forcast_records_json: '+str(self.forcast_records_json[1:10]))
-            self.logger.debug('forcast_records_df: '+str(DataFrame.from_dict(self.forcast_records_json).head()))
             self.forcast_records_df = DataFrame.from_dict(self.forcast_records_json)
             if self.home_page.status_code != 200:
                 self.logger.error("APFS connection returned a bad status code")
