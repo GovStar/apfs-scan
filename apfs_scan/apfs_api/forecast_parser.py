@@ -5,6 +5,7 @@ from typing import List, Any
 
 import pandas as pd
 from pandas import DataFrame, read_json, Series
+from pickle import PickleError
 
 from apfs_scan.apfs_api.utils import DATA_DICT_COLUMNS, exception_log_and_exit
 from os.path import getmtime, exists
@@ -42,7 +43,7 @@ class ApfsForecastParser:
         else:
             self.data_ofd = True
 
-    def filter_view_on_field(self, field: List[str], select_values: dict[str, Any]) -> None:
+    def filter_view_on_field(self, select_values: dict[str, Any]) -> None:
         #self.apfs_data_view = self.apfs_data.loc[(self.apfs_data[list(select_values)] == Series(select_values)).all(axis=1)]
         mask = pd.Series([True] * len(self.apfs_data))
         for column, value in select_values.items():
@@ -92,9 +93,11 @@ class ApfsForecastParser:
 
     def write_apfs_data(self) -> None:
         try:
-            with open(self.apfs_file_path, 'w', encoding='utf-8') as outfile:
-                self.logger.debug("Writing apfs forcast data to file")
-                DataFrame.to_json(self.apfs_data, outfile)
+            self.logger.debug("Writing apfs forcast data to pickle file")
+            DataFrame.to_pickle(self.apfs_data, self.apfs_file_path, compression='zstd')
+        except PickleError as e:
+            self.logger.error("APFS failed pickling when writing to file")
+            exception_log_and_exit(e)
         except ValueError as e:
             self.logger.error("APFS returned a bad type when writing to file")
             exception_log_and_exit(e)
@@ -109,7 +112,7 @@ class ApfsForecastParser:
         try:
             with open(self.apfs_file_path, 'r', encoding='utf-8') as outfile:
                 self.logger.debug("Reading apfs forcast from file: " + self.apfs_file_path)
-                self.apfs_data = read_json(outfile)
+                self.apfs_data = DataFrame.read_pickle(outfile, compression='zstd')
             self.logger.debug("apfs_data read: " + str(self.apfs_data.head()))
         except ValueError as e:
             self.logger.error("APFS returned a bad type when writing to file")
