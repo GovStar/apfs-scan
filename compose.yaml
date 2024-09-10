@@ -13,6 +13,11 @@ services:
       context: .
     ports:
       - 8080:8080
+    volumes:
+      - apfs_data:/app/output
+
+volumes:
+  apfs_data:
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

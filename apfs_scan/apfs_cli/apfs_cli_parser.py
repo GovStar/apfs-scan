@@ -7,7 +7,7 @@ from pandas import DataFrame
 from os import getcwd
 from os.path import abspath, exists, join, basename, dirname
 import logging
-
+from datetime import datetime
 
 def path_vail(path: str):
     path = abspath(path)
@@ -109,8 +109,9 @@ def apfs_cli_wrapper():
     logger.debug("CWD: " + str(getcwd()))
     args = vars(apfs_cli.parser.parse_args())
     logger.debug('apfs_cli args: ' + str(args))
+    output_file_name = "/app/output/data_" + datetime.today().strftime('%Y-%m-%d') + ".json"
 
-    apfs_api = ApfsSession(args['forcast_records'][0])
+    apfs_api = ApfsSession(output_file_name)
 
     logger.debug('Created cli parser')
 
