@@ -94,7 +94,10 @@ class ApfsForecastParser:
     def write_apfs_data(self) -> None:
         try:
             self.logger.debug("Writing apfs forcast data to pickle file")
-            DataFrame.to_pickle(self.apfs_data, self.apfs_file_path, compression='zstd')
+            DataFrame.to_pickle(self.apfs_data, self.apfs_file_path+'.pickle')
+            DataFrame.to_json(self.apfs_data,  self.apfs_file_path+'.json')
+            DataFrame.to_html(self.apfs_data, self.apfs_file_path+'.html')
+            # DataFrame.to_html(self.apfs_data, )
         except PickleError as e:
             self.logger.error("APFS failed pickling when writing to file")
             exception_log_and_exit(e)

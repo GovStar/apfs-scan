@@ -1,5 +1,9 @@
 ARG PYTHON_VERSION=3.13
+ARG OUTPUT_PATH=./APFS_DATA/
+ARG OUTPUT_FILE=${OUTPUT_PATH}scan_results.json
 FROM python:${PYTHON_VERSION}-slim as base
+
+EXPOSE 8080
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -12,11 +16,13 @@ COPY requirements.txt .
 
 RUN python3 -m pip install -r requirements.txt
 
-COPY APFS_DATA ./APFS_DATA
+COPY www ./www
 
 COPY apfs_scan ./apfs_scan
 
 COPY config.toml .
 
 # Run the application.
-CMD python3 -m apfs_scan.apfs_cli.apfs_cli_parser -o APFS_DATA/scan_resutls --sort last_updated_date
+# CMD python3 -m apfs_scan.apfs_cli.apfs_cli_parser -o APFS_DATA/scan_resutls.json && python3 -m http.server --directory APFS_DATA/scan_resutls.json
+CMD python3 -m apfs_scan.apfs_cli.apfs_cli_parser -o ./www/api/scan_results && python3 -m http.server --directory ./www/ 8080
+# cmd python3 -m http.server --directory ./APFS_DATA
