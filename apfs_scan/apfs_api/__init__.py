@@ -20,8 +20,11 @@ from apfs_scan.apfs_api.utils import (
 def init_apfs_api_logger():
     import logging
     logger = logging.getLogger(__name__)
-    logging.basicConfig(filename='apfs_api.log', format='%(asctime)s %(module)s %(levelname)s: %(message)s',
-                        datefmt='%m/%d/%Y %I:%M:%S', level=logging.DEBUG)
+    logging.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s',
+                        datefmt='%m/%d/%Y %I:%M:%S', level=logging.DEBUG, handlers=[
+                            logging.FileHandler('apfs_api.log'),
+                            logging.StreamHandler()
+                        ])
     logging.debug('Started apfs_api')
 
 

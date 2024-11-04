@@ -118,8 +118,9 @@ def apfs_cli_wrapper():
     logger.debug('filter_fields: ' + str(filter_fields))
     logger.debug('display_fields: ' + str(display_fields[0:10]))
 
-    apfs_handler.filter_view_on_field(field=display_fields, select_values=filter_fields)
-    #print(pretty_print_forecast_data(apfs_handler.apfs_data_view, display_fields=display_fields))
+    apfs_handler.filter_view_on_field(select_values=filter_fields)
+    # apfs_handler.filter_view_on_field(field=display_fields, select_values=filter_fields)
+    # print(pretty_print_forecast_data(apfs_handler.apfs_data_view, display_fields=display_fields))
     print(str(apfs_handler.apfs_data_view))
 
 
