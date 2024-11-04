@@ -1,7 +1,7 @@
 # Last known data columns
 DATA_DICT_COLUMNS: list = ['id', 'mission', 'organization', 'small_business_program',
-                           'dollar_range', 'contract_vehicle', 'competitive', 'award_quarter',
-                           'estimated_release_date', 'publish_date', 'previous_publish_date',
+                           'dollar_range', 'contract_type', 'contract_vehicle', 'competitive', 'award_quarter',
+                           'estimated_release_date', 'small_business_set_aside', 'publish_date', 'previous_publish_date',
                            'requirements_contact_phone', 'naics', 'apfs_number',
                            'requirements_title', 'requirement', 'contract_status', 'contractor',
                            'contract_number', 'estimated_period_of_performance_start',
