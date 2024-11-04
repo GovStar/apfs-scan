@@ -22,7 +22,7 @@ COPY apfs_scan ./apfs_scan
 
 COPY config.toml .
 
+COPY entrypoint.sh .
+
 # Run the application.
-# CMD python3 -m apfs_scan.apfs_cli.apfs_cli_parser -o APFS_DATA/scan_resutls.json && python3 -m http.server --directory APFS_DATA/scan_resutls.json
-CMD python3 -m apfs_scan.apfs_cli.apfs_cli_parser -o ./www/api/scan_results && python3 -m http.server --directory ./www/ 8080
-# cmd python3 -m http.server --directory ./APFS_DATA
+ENTRYPOINT ["/entrypoint.sh"]
