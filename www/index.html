@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APFS Scanner</title>
+</head>
+<body>
+    <h1>APFS  Scanner</h1>
+    <div class="scan-container">
+        <div>
+            <h2>Operations</h2>
+            <a href="#" id="scan-button">Refresh Data</a>
+        </div>
+        
+        <div id="scan-results">
+            <h2>Currnet Scan Results</h2>
+            <pre id="output"></pre>
+            <a href="api/scan_results.html" id="download-link">Download Results as HTML</a>
+            <br>
+            <a href="api/scan_results.json" id="download-link-json">Download Results as JSON</a>
+            <!-- <a href="API/scan-results.csv" id="download-link-csv">Download Results as PICKLE</a>
+            <a href="#" id="download-link-xml">Download Results as XML</a>
+            <a href="#" id="download-link-html">Download Results as HTML</a> -->
+        </div>
+
+        <div>   
+            <h3>DISPLAY DATA</h3>
+            <iframe src="api/scan_results.html" name="iframe_a" height="1000px" width="100%" title="Iframe Example"></iframe>
+        </div>
+    </div>
+</body>
+</html>

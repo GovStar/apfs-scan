@@ -8,8 +8,9 @@ from pandas import DataFrame, read_json
 from requests import Session
 from apfs_scan.apfs_api.utils import exception_log_and_exit
 
-
-class ApfsSession:
+# TODO: STUB
+# https://www.usaspending.gov
+class UsaSpendingGovSession:
     session: requests.Session
     home_page: requests.Response
     forcast_records_json: Optional[Dict[str, Any]]

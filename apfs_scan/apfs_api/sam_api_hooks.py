@@ -8,9 +8,20 @@ from pandas import DataFrame, read_json
 from requests import Session
 from apfs_scan.apfs_api.utils import exception_log_and_exit
 
-
-class ApfsSession:
+# TODO: STUB
+# https://sam.gov
+class SamSession:
     session: requests.Session
+    URL: str = "https://api.sam.gov/opportunities/v2/search"
+
+    PRODUCTION_ENDPOINTS: [str] = ['https://api.sam.gov/entity-information/v4/', 'https://api.sam.gov/entity-information/v4/exclusions',
+                                   'https://api.sam.gov/opportunities/v2/search', 'https://api.sam.gov/entity-information/v3/entities',
+                                   'https://api.sam.gov/data-services/v1/extracts',  'https://api.sam.gov/prod/federalorganizations/v1/',
+                                   'https://api.sam.gov/locationservices/v1/cities', 'https://api.sam.gov/locationservices/v1/states',
+                                   'https://api.sam.gov/locationservices/v1/zip']
+
+    USER_AGENT: str = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+    API_KEY: str = "api_here"
     home_page: requests.Response
     forcast_records_json: Optional[Dict[str, Any]]
     forcast_records_df: DataFrame
@@ -25,11 +36,9 @@ class ApfsSession:
 
     def setup_apfs_connection(self) -> None:
         try:
-            user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
             self.session = Session()
-            self.session.headers.update({'User-Agent': user_agent})
-            self.home_page = self.session.get(url='https://apfs-cloud.dhs.gov')
-            self.forcast_records_json = self.session.get(url='https://apfs-cloud.dhs.gov/api/forecast/').json()
+            self.session.headers.update({'User-Agent': self.USER_AGENT})
+            self.forcast_records_json = self.session.get(url=self.URL).json()
             self.logger.debug('forcast_records_json: '+str(self.forcast_records_json[1:10]))
             self.forcast_records_df = DataFrame.from_dict(self.forcast_records_json)
             if self.home_page.status_code != 200:
